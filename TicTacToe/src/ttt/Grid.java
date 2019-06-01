@@ -23,6 +23,16 @@ public class Grid
 		
 	}
 	
+	public boolean positionIsEmpty(Position p)
+	{
+		if(grid[p.x][p.y].isEqual(new Element(0)))
+		{
+			return true; 
+		}
+		
+		return false; 
+	}
+	
 	public void printOut()
 	{
 		for(int i = 0; i < 3; i++)
@@ -139,7 +149,23 @@ public class Grid
 		return true; 
 	}
 	
-	public void ai()
+	public boolean isEmpty()
+	{
+		for(int i = 0; i < 3; i++)
+		{
+			for(int j = 0; j < 3; j++)
+			{
+				if(!grid[i][j].isEqual(new Element(0)))
+				{
+					return false; 
+				}
+			}
+		}
+		
+		return true; 
+	}
+	
+	public Position ai()
 	{
 		//this is going to act as player 2. 
 		
@@ -148,6 +174,82 @@ public class Grid
 		//first step, put in a point a random middle point. 
 		
 		//then see if there is a line, then try and break it. 
+		
+		//first move is going to be a corner. 
+		
+		//11, 13, 31, 33
+		Position p; 
+		Random random = new Random();
+		int ran = random.nextInt((3 - 1) + 1) + 1; 
+		if(ran == 1)
+		{
+			Random r = new Random(); 
+			int rand = r.nextInt((4 - 1) + 1) + 1; 
+			System.out.println();
+			System.out.println(rand + " is the random number. ");  
+			switch(rand)
+			{
+				case 1: 
+					p = new Position(0,0);
+					break; 
+				case 2: 
+					p = new Position(0,2);
+					break;
+				case 3: 
+					p = new Position(2,0);
+					break;
+				case 4: 
+					p = new Position(2,2);
+					break;
+				default: 
+					p = null; 
+					break; 
+			}
+		}
+		else if(ran == 2)
+		{
+			//this is going to have all the middle pieces.
+			
+			//12, 21, 23, 32
+			
+			Random r = new Random(); 
+			int rand = r.nextInt((4 - 1) + 1) + 1; 
+			System.out.println();
+			System.out.println(rand + " is the random number. ");  
+			switch(rand)
+			{
+				case 1: 
+					p = new Position(0,1);
+					break; 
+				case 2: 
+					p = new Position(1,0);
+					break;
+				case 3: 
+					p = new Position(1,2);
+					break;
+				case 4: 
+					p = new Position(2,1);
+					break;
+				default: 
+					p = null; 
+					break; 
+			}
+		}
+		else
+		{
+			//this is the center. 
+			
+			p = new Position(1,1); 
+		}
+		
+
+		return p; 
+		
+		
+		
+		//1 - 4
+		
+		//rand.nextInt((max - min) + 1) + min;
 	}
 	
 	public static void main(String[] args)
@@ -186,7 +288,7 @@ public class Grid
 				x = getPosition(input);
 			}
 			grid.addVal(x, 1); 
-			grid.printOut(); 
+			grid.printOut(); System.out.println();
 			if(grid.win(1) == true)
 			{
 				System.out.println("Player 1 (X) WINS!!!"); 
@@ -202,22 +304,34 @@ public class Grid
 			
 			//Player 2 / AI
 			
+			Position y; 
+			
 			if(players == 1)
 			{
-				grid.ai(); 
+				y = grid.ai();
+				
+				//y == null ||
+				
+				while(grid.positionIsEmpty(y) == false)
+				{
+					y = grid.ai();
+				}
+			}
+			else {
+				System.out.println("Enter position for player 2. ");
+				input = scanner.nextInt(); 
+				y = getPosition(input); 
+				while(grid.addVal(y, 2) == false)
+				{
+					System.out.println("Wrong input. Try again. ");
+					input = scanner.nextInt(); 
+					y = getPosition(input);
+				}
 			}
 			
-			System.out.println("Enter position for player 2. ");
-			input = scanner.nextInt(); 
-			Position y = getPosition(input); 
-			while(grid.addVal(y, 2) == false)
-			{
-				System.out.println("Wrong input. Try again. ");
-				input = scanner.nextInt(); 
-				y = getPosition(input);
-			}
+			
 			grid.addVal(y, 2); 
-			grid.printOut();
+			grid.printOut();System.out.println();
 			if(grid.win(2) == true)
 			{
 				System.out.println("Player 2 (O) WINS!!!"); 
